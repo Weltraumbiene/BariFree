@@ -51,7 +51,6 @@ def check_image_alt(url, soup):
     for img in soup.find_all('img'):
         alt = img.get('alt')
         if alt is None or alt.strip() == "":
-            # Mögliche Bildquellen prüfen
             src_candidates = [
                 img.get('data-src'),
                 img.get('data-orig-src'),
@@ -135,7 +134,7 @@ def check_headings(url, soup):
                 "url": url,
                 "title": title,
                 "snippet": str(headings[i]),
-                "description": "Überschriftenstruktur ist nicht hierarchisch korrekt (z. B. H2 direkt nach H4)",
+                "description": "Überschriftenstruktur ist nicht hierarchisch korrekt (z.B. H2 direkt nach H4)",
                 "element": "HEADING"
             })
     return issues

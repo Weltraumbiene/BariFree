@@ -1,3 +1,4 @@
+##backend\app\crawler.py##
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
@@ -7,32 +8,25 @@ from urllib.parse import urlparse
 
 from .logs import log_message
 
+
 def match_exclusion(url, patterns):
-    """
-    Prüft, ob die URL gegen eines der Ausschlussmuster passt.
-    Achtet auch auf fehlenden abschließenden Slash.
-    """
     path = urlparse(url).path.rstrip('/')
     for pattern in patterns:
         if fnmatch.fnmatch(path, pattern) or fnmatch.fnmatch(path + '/', pattern):
             return pattern
     return None
 
+
 def normalize_url(url):
-    """
-    Normalisiert die URL, indem Fragment (#...) entfernt und Trailing Slash bereinigt wird.
-    """
     return url.split("#")[0].rstrip("/")
 
-def crawl_website(base_url, exclude_patterns=None, max_depth=3):
-    """
-    Crawlt die Website und beachtet dabei die Ausschlussmuster und maximale Crawltiefe.
-    """
+
+def crawl_website(base_url, exclude_patterns=None, max_depth=3, timeout_seconds=None, abort_event=None):
     msg_start = f"\n[Scan gestartet] Ziel-URL: {base_url}"
     print(msg_start)
     log_message(msg_start)
 
-    msg_depth = f"[⚙️  Crawltiefe eingestellt]: {max_depth} Ebene(n)"
+    msg_depth = f"[Crawltiefe eingestellt]: {max_depth} Ebene(n)"
     print(msg_depth)
     log_message(msg_depth)
 
@@ -48,6 +42,18 @@ def crawl_website(base_url, exclude_patterns=None, max_depth=3):
     pages = []
 
     while to_visit:
+        if abort_event and abort_event.is_set():
+            msg_abort = "[Crawler] Scan durch Benutzer abgebrochen."
+            print(msg_abort)
+            log_message(msg_abort)
+            break
+
+        if timeout_seconds and (time.time() - start_time > timeout_seconds):
+            msg_timeout = f"[Crawler] Timeout nach {timeout_seconds} Sekunden erreicht. Scan wird abgebrochen."
+            print(msg_timeout)
+            log_message(msg_timeout)
+            break
+
         url, depth = to_visit.pop(0)
         queued.discard(url)
 
@@ -56,14 +62,14 @@ def crawl_website(base_url, exclude_patterns=None, max_depth=3):
         visited.add(url)
 
         if depth > max_depth:
-            msg_max = f"[Crawler] ⛔ Maximale Tiefe erreicht bei: {url}"
+            msg_max = f"[Crawler] Maximale Tiefe erreicht bei: {url}"
             print(msg_max)
             log_message(msg_max)
             continue
 
         matched = match_exclusion(url, exclude_patterns)
         if matched:
-            msg_excl = f"[Crawler] ⛔ Ausschluss wegen Muster '{matched}': {url}"
+            msg_excl = f"[Crawler] Ausschluss wegen Muster '{matched}': {url}"
             print(msg_excl)
             log_message(msg_excl)
             continue
@@ -77,7 +83,7 @@ def crawl_website(base_url, exclude_patterns=None, max_depth=3):
                     "soup": soup
                 })
 
-                msg_found = f"[Crawler] ✔ Gefunden: {url} (Tiefe: {depth})"
+                msg_found = f"[Crawler] Gefunden: {url} (Tiefe: {depth})"
                 print(msg_found)
                 log_message(msg_found)
 
@@ -90,7 +96,7 @@ def crawl_website(base_url, exclude_patterns=None, max_depth=3):
                             queued.add(normalized)
 
         except Exception as e:
-            msg_error = f"[Crawler] ⚠ Fehler bei {url}: {e}"
+            msg_error = f"[Crawler] Fehler bei {url}: {e}"
             print(msg_error)
             log_message(msg_error)
             continue

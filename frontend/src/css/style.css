@@ -1,4 +1,4 @@
-/* Google Fonts laden */
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@400&display=swap');
 
 /* Allgemein */
@@ -301,20 +301,14 @@ body, html {
   flex-wrap: wrap;
   gap: 1rem;
   margin-block-start: 1rem;
-  align-items: stretch; /* beide gleich hoch */
-}
-
-
-/* Beide gleich breit */
-.pseudo-terminal,
-.summary-box {
-  flex: 1 1 48%; /* jeweils etwa die Hälfte bei genügend Platz */
-  min-inline-size: 300px;
-  box-sizing: border-box;
+  align-items: stretch; 
 }
 
 /* Pseudo-Terminal Styling */
 .pseudo-terminal {
+  flex: 1 1 65%;
+  min-inline-size: 300px;
+  box-sizing: border-box;
   background: #111;
   color: #0f0;
   padding: 0.5rem;
@@ -322,12 +316,26 @@ body, html {
   block-size: 400px;
   overflow-y: auto;
   text-align: start;
+  border-radius: 4px;
 }
 
 /* Summary-Box Styling */
 .summary-box {
-  background: #f9f9f9;
-  padding: 1rem;
+  flex: 1 1 28%;
+  min-inline-size: 250px;
+  box-sizing: border-box;
+  background: #d6d6d6;
+  padding: 0.5rem;
   border-radius: 4px;
   text-align: start;
+  font-size: 14px;
+}
+
+.button.danger {
+  background-color: #dc3545;
+  color: white;
+}
+.button.danger:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
 }
