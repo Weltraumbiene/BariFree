@@ -17,7 +17,7 @@ const WelcomeScreen: React.FC = () => {
         Gesellschaftliche Teilhabe betrifft auch den digitalen Raum. <br></br>Doch für viele Menschen mit Seh- oder Hörbeeinträchtigungen sind Webanwendungen noch immer voller Barrieren.
       </p>
       <p className="welcome-text">
-        BariFree von ASQA prüft zentrale Kriterien wie<br></br> Alternativtexte, Farbkontraste und die Struktur von Überschriften. <br></br>Anschließend erhalten Sie eine übersichtliche Auswertung und optional einen detaillierten Bericht als HTML oder CSV.
+        BariFree von ASQA GmbH prüft zentrale Kriterien wie<br></br> Alternativtexte, Farbkontraste und die Struktur von Überschriften. <br></br>Anschließend erhalten Sie eine übersichtliche Auswertung und optional einen detaillierten Bericht als HTML oder CSV.
       </p>
       <button className="start-button" onClick={handleStartTest}>
         Test starten
